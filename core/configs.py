@@ -10,8 +10,8 @@ class Settings(BaseSettings):
     Configurações Gerais Usadas na Aplicação.
     """
     API_V1_STR: str = '/api/v1'
-    #DB_URL: str = 'sqlite+aiosqlite:///./teste.db/'
-    DB_URL: str = 'postgresql+asyncpg://postgres:1212@localhost:5432/postgres'
+    DB_URL: str = 'sqlite+aiosqlite:///./teste.db/'
+    #DB_URL: str = 'postgresql+asyncpg://postgres:1212@localhost:5432/postgres'
     DBBaseModel: DeclarativeMeta = declarative_base()
 
     #JWT_SECRET: str = 'ixJcMwpQ8MJRgF6cXofC8lKo4a2t0LdRUbkNcQTV2PA'

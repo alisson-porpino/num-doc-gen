@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 from core.configs import settings
 
 
-class DocumentsModel(settings.DBBaseModel):
+class DocumentosModel(settings.DBBaseModel):
     __tablename__: str = 'documents'
 
     id: str = Column(Integer, primary_key=True, autoincrement=True)

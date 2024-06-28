@@ -5,8 +5,8 @@ from fastapi import APIRouter, status, Depends, HTTPException, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from models.documents_model import DocumentsModel
-from schemas.documents_schema import DocumentsSchema
+from models.documentos_model import DocumentosModel
+from schemas.documentos_schema import DocumentosSchema
 from core.deps import get_session
 
 
@@ -15,9 +15,9 @@ router = APIRouter()
 
 
 # POST Documentos
-@router.post('/', status_code=status.HTTP_201_CREATED, response_model=DocumentsSchema)
-async def post_documento(documento: DocumentsSchema, db: AsyncSession = Depends(get_session)):
-    novo_documento: DocumentsModel = DocumentsModel(nome_doc=documento.nome_doc, tipo=documento.tipo, origem=documento.origem)
+@router.post('/', status_code=status.HTTP_201_CREATED, response_model=DocumentosSchema)
+async def post_documento(documento: DocumentosSchema, db: AsyncSession = Depends(get_session)):
+    novo_documento: DocumentosModel = DocumentosModel(nome_doc=documento.nome_doc, tipo=documento.tipo, origem=documento.origem)
 
     db.add(novo_documento)
     await db.commit()
@@ -26,12 +26,12 @@ async def post_documento(documento: DocumentsSchema, db: AsyncSession = Depends(
 
 
 # GET Documentos
-@router.get('/', response_model=List[DocumentsSchema])
+@router.get('/', response_model=List[DocumentosSchema])
 async def get_documentos(db: AsyncSession = Depends(get_session)):
     async with db as session:
-        query = select(DocumentsModel)
+        query = select(DocumentosModel)
         result = await session.execute(query)
-        documentos: List[DocumentsModel] = result.scalars().unique().all()
+        documentos: List[DocumentosModel] = result.scalars().unique().all()
 
         return documentos
 

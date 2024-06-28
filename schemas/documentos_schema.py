@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class DocumentsSchema(BaseModel):
+class DocumentosSchema(BaseModel):
     id: Optional[int] = None
     nome_doc: str
     tipo: Optional[str]
