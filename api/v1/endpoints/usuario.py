@@ -8,8 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.exc import IntegrityError
 
-from models.usuario_model import UsuarioModel
-from schemas.usuario_schema import UsuarioSchemaBase, UsuarioSchemaCreate, UsuarioSchemaUp, UsuarioSchemaArtigos
+from models.usuarios_model import UsuarioModel
+from schemas.usuario_schema import UsuarioSchemaBase, UsuarioSchemaCreate, UsuarioSchemaUp, UsuarioSchemaDocumentos
 from core.deps import get_session, get_current_user
 from core.security import gerar_hash_senha
 from core.auth import autenticar, criar_token_acesso
@@ -52,12 +52,12 @@ async def get_usuarios(db: AsyncSession = Depends(get_session)):
 
 
 # GET Usuario
-@router.get('/{usuario_id}', response_model=UsuarioSchemaArtigos, status_code=status.HTTP_200_OK)
+@router.get('/{usuario_id}', response_model=UsuarioSchemaDocumentos, status_code=status.HTTP_200_OK)
 async def get_usuario(usuario_id: int, db: AsyncSession = Depends(get_session)):
     async with db as session:
-        query = select(UsuarioModel).filter(UsuarioModel.id == usuario_id)
+        query = select(UsuarioModel).filter(UsuarioModel.id_user == usuario_id)
         result = await session.execute(query)
-        usuario: UsuarioSchemaArtigos = result.scalars().unique().one_or_none()
+        usuario: UsuarioSchemaDocumentos = result.scalars().unique().one_or_none()
 
         if usuario:
             return usuario
@@ -70,7 +70,7 @@ async def get_usuario(usuario_id: int, db: AsyncSession = Depends(get_session)):
 @router.put('/{usuario_id}', response_model=UsuarioSchemaBase, status_code=status.HTTP_202_ACCEPTED)
 async def put_usuario(usuario_id: int, usuario: UsuarioSchemaUp, db: AsyncSession = Depends(get_session)):
     async with db as session:
-        query = select(UsuarioModel).filter(UsuarioModel.id == usuario_id)
+        query = select(UsuarioModel).filter(UsuarioModel.id_user == usuario_id)
         result = await session.execute(query)
         usuario_up: UsuarioSchemaBase = result.scalars().unique().one_or_none()
 
@@ -100,7 +100,7 @@ async def delete_usuario(usuario_id: int, db: AsyncSession = Depends(get_session
     async with db as session:
         query = select(UsuarioModel).filter(UsuarioModel.id == usuario_id)
         result = await session.execute(query)
-        usuario_del: UsuarioSchemaArtigos = result.scalars().unique().one_or_none()
+        usuario_del: UsuarioSchemaDocumentos = result.scalars().unique().one_or_none()
 
         if usuario_del:
             await session.delete(usuario_del)
@@ -121,4 +121,4 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail='Dados de acesso incorretos.')
 
-    return JSONResponse(content={"access_token": criar_token_acesso(sub=usuario.id), "token_type": "bearer"}, status_code=status.HTTP_200_OK)
+    return JSONResponse(content={"access_token": criar_token_acesso(sub=usuario.id_user), "token_type": "bearer"}, status_code=status.HTTP_200_OK)

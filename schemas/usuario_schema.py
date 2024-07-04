@@ -3,7 +3,7 @@ from typing import List
 
 from pydantic import BaseModel, EmailStr
 
-from schemas.artigo_schema import ArtigoSchema
+from schemas.documentos_schema import DocumentosSchema
 
 
 class UsuarioSchemaBase(BaseModel):
@@ -17,15 +17,15 @@ class UsuarioSchemaBase(BaseModel):
     #recovery_code: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UsuarioSchemaCreate(UsuarioSchemaBase):
     senha: str
 
 
-class UsuarioSchemaArtigos(UsuarioSchemaBase):
-    artigos: Optional[List[ArtigoSchema]]
+class UsuarioSchemaDocumentos(UsuarioSchemaBase):
+    documentos: Optional[List[DocumentosSchema]]
 
 
 class UsuarioSchemaUp(UsuarioSchemaBase):

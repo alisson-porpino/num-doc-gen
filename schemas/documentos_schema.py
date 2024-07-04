@@ -5,9 +5,14 @@ from pydantic import BaseModel
 
 class DocumentosSchema(BaseModel):
     id: Optional[int] = None
+    num_reg: int
     nome_doc: str
-    tipo: str
-    setor_origem: Optional[str]
+    tipo_doc: str
+    descricao: str
+    # date_created: Optional[int] = None
+    setor_origem: Optional[str] = None
+    # requester: Optional[str] = None
+    criador_id: Optional[int]
 
     class Config:
-        orm_mode = True
+        from_attributes = True

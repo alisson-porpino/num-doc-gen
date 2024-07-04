@@ -14,16 +14,16 @@ class Settings(BaseSettings):
     #DB_URL: str = 'postgresql+asyncpg://postgres:1212@localhost:5432/postgres'
     DBBaseModel: DeclarativeMeta = declarative_base()
 
-    #JWT_SECRET: str = 'ixJcMwpQ8MJRgF6cXofC8lKo4a2t0LdRUbkNcQTV2PA'
+    JWT_SECRET: str = 'AW7dCSPNlDxi6O5XMq_vrwPuP4xYAkYrfqfvMmzB11o'
     """
     import secrets
     
     token: str = secrets.token_urlsafe(32)
     token
     """
-    #ALGORITHM: str ='HS256'
+    ALGORITHM: str ='HS256'
     # 60 minutos * 24 horas * 7 dias => 1 semana
-    #ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
 
 
     class config:
