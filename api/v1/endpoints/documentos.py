@@ -2,23 +2,42 @@ from typing import List
 
 from fastapi import APIRouter, status, Depends, HTTPException, Response
 
+from datetime import datetime
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from models.documentos_model import DocumentosModel
 from models.usuarios_model import UsuarioModel
-from schemas.documentos_schema import DocumentosSchema
+from schemas.documentos_schema import DocumentosSchema, DocumentosCreateSchema
 from core.deps import get_session, get_current_user
+
+from sqlalchemy import select, func
 
 
 router = APIRouter()
 
+# Calculo do numero de registro.
+async def calcular_num_reg(db):
+    # Obtém o ano atual
+    ano_atual = datetime.now().year
+    
+    # Consulta para contar o número de documentos
+    stmt = select(func.count()).select_from(DocumentosModel)
+    total_linhas = await db.scalar(stmt)
+
+    # Formata o num_reg como três dígitos, seguido pelo ano atual
+    num_reg = f"{total_linhas + 1:03d}/{ano_atual}"
+    return num_reg
+
 
 # POST Documentos
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=DocumentosSchema)
-async def post_documento(documento: DocumentosSchema, usuario_logado:UsuarioModel = Depends(get_current_user), db: AsyncSession = Depends(get_session)):
+async def post_documento(documento: DocumentosCreateSchema, usuario_logado:UsuarioModel = Depends(get_current_user), db: AsyncSession = Depends(get_session)):
+    num_reg_calculado = await calcular_num_reg(db)
+
     novo_documento: DocumentosModel = DocumentosModel(
-        num_reg=documento.num_reg, nome_doc=documento.nome_doc, tipo_doc=documento.tipo_doc, descricao=documento.descricao, setor_origem=documento.setor_origem, criador_id=usuario_logado.id_user)
+        num_reg=num_reg_calculado, nome_doc=documento.nome_doc, tipo_doc=documento.tipo_doc, descricao=documento.descricao, setor_origem=documento.setor_origem, criador_id=usuario_logado.id_user)
 
     db.add(novo_documento)
     await db.commit()

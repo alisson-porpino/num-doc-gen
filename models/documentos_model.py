@@ -9,7 +9,7 @@ class DocumentosModel(settings.DBBaseModel):
     __tablename__: str = 'documentos'
 
     id_doc: str = Column(Integer, primary_key=True, autoincrement=True)
-    num_reg: str = Column(String(100), nullable=False)
+    num_reg: str = Column(String(100), unique=True, nullable=False)
     nome_doc: str = Column(String(120), nullable=False)
     # Vai existir uma lista suspensa
     tipo_doc: str = Column(String(120), nullable=False)
