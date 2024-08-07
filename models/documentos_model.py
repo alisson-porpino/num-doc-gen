@@ -9,12 +9,12 @@ class DocumentosModel(settings.DBBaseModel):
     __tablename__: str = 'documentos'
 
     id_doc: str = Column(Integer, primary_key=True, autoincrement=True)
-    num_reg: str = Column(String(100), unique=True, nullable=False)
-    nome_doc: str = Column(String(120), nullable=False)
+    num_reg: str = Column(String(100), unique=False, nullable=False)
     # Vai existir uma lista suspensa
-    tipo_doc: str = Column(String(120), nullable=False)
+    tipo_doc: str = Column(String(120), nullable=False) # CI, Processos, etc.
     descricao: str = Column(String(120), nullable=False)
-    setor_origem: str = Column(String(255), nullable=False)
+    setor_origem: str = Column(String(255), nullable=False) # Interno, Externo, etc.
+    # setor_destino: str = Column(String(255), nullable=False) # Interno, Externo, etc.
     # requester: str = Column(String, default=datetime.now, onupdate=datetime.now, nullable=True)
     # destino: str = Column(String(255), nullable=False)
     date_created: str = Column(String, default=datetime.now, nullable=False)

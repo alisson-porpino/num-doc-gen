@@ -15,8 +15,10 @@ class UsuarioModel(settings.DBBaseModel):
     senha: str = Column(String(255), nullable=False)
     date_created: str = Column(String, default=datetime.now, nullable=False)
     last_update: str = Column(String, default=datetime.now, onupdate=datetime.now, nullable=True)
+    
     #recovery_code: str = Column(String(200), nullable=True)
-    eh_admin = Column(Boolean, default=False)
+    #eh_admin = Column(Boolean, default=False)
+
     documentos = relationship(
         "DocumentosModel",
         cascade="all,delete-orphan",
@@ -24,5 +26,3 @@ class UsuarioModel(settings.DBBaseModel):
         uselist=True,
         lazy="joined"
     )
-
-    

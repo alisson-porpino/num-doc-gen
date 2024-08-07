@@ -6,11 +6,11 @@ from pydantic import BaseModel
 class DocumentosSchema(BaseModel):
     id: Optional[int] = None
     num_reg: str
-    nome_doc: str
+    objeto: str
     tipo_doc: str
     descricao: str
     # date_created: Optional[int] = None
-    setor_origem: Optional[str] = None
+    setor_origem: str
     # requester: Optional[str] = None
     criador_id: Optional[int]
 
@@ -18,7 +18,7 @@ class DocumentosSchema(BaseModel):
         from_attributes = True
 
 class DocumentosCreateSchema(BaseModel):
-    nome_doc: str
+    objeto: str
     tipo_doc: str
     descricao: str
     setor_origem: str
