@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, Column, Boolean, ForeignKey
+from sqlalchemy import Integer, String, Column, ForeignKey, DateTime
 from datetime import datetime
 from sqlalchemy.orm import relationship
 
@@ -10,18 +10,16 @@ class DocumentosModel(settings.DBBaseModel):
 
     id_doc: str = Column(Integer, primary_key=True, autoincrement=True)
     num_reg: str = Column(String(100), unique=False, nullable=False)
-    # Vai existir uma lista suspensa
-    tipo_doc: str = Column(String(120), nullable=False) # CI, Processos, etc.
-    descricao: str = Column(String(120), nullable=False)
-    setor_origem: str = Column(String(255), nullable=False) # Interno, Externo, etc.
-    # setor_destino: str = Column(String(255), nullable=False) # Interno, Externo, etc.
-    # requester: str = Column(String, default=datetime.now, onupdate=datetime.now, nullable=True)
-    # destino: str = Column(String(255), nullable=False)
-    date_created: str = Column(String, default=datetime.now, nullable=False)
-    last_update: str = Column(String, default=datetime.now, onupdate=datetime.now, nullable=True)
+    objeto: str = Column(String(100), unique=False, nullable=False)
+    origem: str = Column(String(100), unique=False, nullable=False)
+    tipo_doc: str = Column(String(120), nullable=False)
+    tipo_destino: str = Column(String(255), nullable=False) # Interno, Externo, etc.
+    destino: str = Column(String(255), nullable=True)
+    date_created: str = Column(DateTime, default=datetime.now, nullable=False)
+    last_update: str = Column(DateTime, default=datetime.now, onupdate=datetime.now, nullable=True)
     
     criador_id: int = Column(Integer, ForeignKey('usuarios.id_user'))
-
+    
     criador: str = relationship("UsuarioModel", back_populates='documentos', lazy='joined')
 
     __allow_unmapped__ = True

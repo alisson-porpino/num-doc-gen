@@ -18,16 +18,18 @@ from sqlalchemy import select, func
 router = APIRouter()
 
 
-async def calcular_num_reg(db, setor_origem: str):
+#Função para calcular e gerar número de registro.
+async def calcular_num_reg(db, tipo_destino: str):
     
     # Obtém o ano atual
     ano_atual = datetime.now().year
 
-    # Consulta para contar o número de documentos
-    stmt = select(func.count()).select_from(DocumentosModel).where(DocumentosModel.setor_origem == setor_origem)
+    # Obtém a quantidade de dados da tabela de acordo com um filtro.
+    # Esse filtro é o nome do próprio dado contido na coluna "tipo_destino"
+    stmt = select(func.count()).select_from(DocumentosModel).where(DocumentosModel.tipo_destino == tipo_destino)
     total_linhas = await db.scalar(stmt)
 
-    # Formata o num_reg como três dígitos, seguido pelo ano atual
+    # Gera e formata o num_reg como três dígitos, seguido pelo ano atual
     num_reg = f"{total_linhas + 1:03d}/{ano_atual}"
     return num_reg
 
@@ -36,10 +38,10 @@ async def calcular_num_reg(db, setor_origem: str):
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=DocumentosSchema)
 async def post_documento(documento: DocumentosCreateSchema, usuario_logado:UsuarioModel = Depends(get_current_user), db: AsyncSession = Depends(get_session)):
 
-    num_reg_calculado = await calcular_num_reg(db, documento.setor_origem)
+    num_reg_calculado = await calcular_num_reg(db, documento.tipo_destino)
 
     novo_documento: DocumentosModel = DocumentosModel(
-        num_reg=num_reg_calculado, objeto=documento.objeto, tipo_doc=documento.tipo_doc, descricao=documento.descricao, setor_origem=documento.setor_origem, criador_id=usuario_logado.id_user)
+        num_reg=num_reg_calculado, objeto=documento.objeto, origem=documento.origem, tipo_doc=documento.tipo_doc, tipo_destino=documento.tipo_destino, criador_id=usuario_logado.id_user)
 
     db.add(novo_documento)
     await db.commit()
@@ -73,34 +75,32 @@ async def get_documento(documento_id: int, db: AsyncSession = Depends(get_sessio
                                 status_code=status.HTTP_404_NOT_FOUND)
 
 
-# PUT Documento
-@router.put('/{documento_id}', response_model=DocumentosSchema, status_code=status.HTTP_202_ACCEPTED)
-async def put_documento(documento_id: int, documento: DocumentosSchema, db: AsyncSession = Depends(get_session), usuario_logado: UsuarioModel = Depends(get_current_user)):
-    async with db as session:
-        query = select(DocumentosModel).filter(DocumentosModel.id_doc == documento_id)
-        result = await session.execute(query)
-        documento_update: DocumentosModel = result.scalars().unique().one_or_none()
+# # PUT Documento (Não utilizavel)
+# @router.put('/{documento_id}', response_model=DocumentosSchema, status_code=status.HTTP_202_ACCEPTED)
+# async def put_documento(documento_id: int, documento: DocumentosSchema, db: AsyncSession = Depends(get_session), usuario_logado: UsuarioModel = Depends(get_current_user)):
+#     async with db as session:
+#         query = select(DocumentosModel).filter(DocumentosModel.id_doc == documento_id)
+#         result = await session.execute(query)
+#         documento_update: DocumentosModel = result.scalars().unique().one_or_none()
 
-        if documento_update:
-            if documento.num_reg:
-                documento_update.num_reg = documento.num_reg
-            if documento.objeto:
-                documento_update.objeto = documento.objeto
-            if documento.tipo_doc:
-                documento_update.tipo_doc = documento.tipo_doc
-            if documento.descricao:
-                documento_update.descricao = documento.descricao
-            if documento.setor_origem:
-                documento_update.setor_origem = documento.setor_origem
-            if usuario_logado.id_user != documento_update.criador_id:
-                documento_update.usuario_id = usuario_logado.id_user
+#         if documento_update:
+#             if documento.num_reg:
+#                 documento_update.num_reg = documento.num_reg
+#             if documento.objeto:
+#                 documento_update.objeto = documento.objeto
+#             if documento.tipo_doc:
+#                 documento_update.tipo_doc = documento.tipo_doc
+#             if documento.tipo_destino:
+#                 documento_update.tipo_destino = documento.tipo_destino
+#             if usuario_logado.id_user != documento_update.criador_id:
+#                 documento_update.usuario_id = usuario_logado.id_user
 
-            await session.commit()
+#             await session.commit()
 
-            return documento_update
-        else:
-            raise HTTPException(detail='Documento não encontrado',
-                                status_code=status.HTTP_404_NOT_FOUND)
+#             return documento_update
+#         else:
+#             raise HTTPException(detail='Documento não encontrado',
+#                                 status_code=status.HTTP_404_NOT_FOUND)
 
 
 # DELETE Documento

@@ -7,10 +7,10 @@ class DocumentosSchema(BaseModel):
     id: Optional[int] = None
     num_reg: str
     objeto: str
+    origem: str
     tipo_doc: str
-    descricao: str
     # date_created: Optional[int] = None
-    setor_origem: str
+    tipo_destino: str
     # requester: Optional[str] = None
     criador_id: Optional[int]
 
@@ -19,9 +19,9 @@ class DocumentosSchema(BaseModel):
 
 class DocumentosCreateSchema(BaseModel):
     objeto: str
+    origem: str
     tipo_doc: str
-    descricao: str
-    setor_origem: str
+    tipo_destino: str
     criador_id: int
 
     class Config:

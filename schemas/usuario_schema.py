@@ -12,9 +12,6 @@ class UsuarioSchemaBase(BaseModel):
     username: str
     email: EmailStr
     eh_admin: bool = False
-    #date_created: Optional[str] = None
-    #last_update: Optional[str] = None
-    #recovery_code: Optional[str] = None
 
     class Config:
         from_attributes = True
